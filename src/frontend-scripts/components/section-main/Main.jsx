@@ -100,14 +100,14 @@ export class Main extends React.Component {
 											<a href="/tou" target="_blank" rel="noopener noreferrer">
 												rules of the site
 											</a>{' '}
-											to play here. Cliffs: No NSFW/No hate speech/No player abuse. These rules are "relaxed" if you are only here to play private games.
+											to play here. Cliffs: No NSFW/No hate speech/No player abuse/Play to win/Don't cheat. These rules are "relaxed" if you are only here to play private games.
 										</p>
 										<p>
-											If you need moderator help or support, the best way is on the <b>#mod-support</b> channel of our{' '}
+											If you need moderator assistance, the best way is on the <b>#mod-support</b> channel of our{' '}
 											<a href="https://discord.gg/secrethitlerio" target="_blank" rel="noopener noreferrer">
-												Discord server.
+												Discord server
 											</a>{' '}
-											You can also make reports by double clicking someone's name in game.
+											. While seated in a game, you can also request mod assistance with the "@mod" command (e.g. @mod 6 is afk). To report a specifc seated player, double-click their name and fill out the report.
 										</p>
 									</React.Fragment>
 								);
@@ -142,6 +142,16 @@ export class Main extends React.Component {
 							case 3:
 								return (
 									<React.Fragment>
+										<h5>How does policy card selection work?</h5>
+										<p>
+											When you are in a government you can either be the president or the chancellor. As the president, you receive 3 cards and select a card 
+											you do NOT want to be played. As a chancellor, you get 2 cards and select the one you WANT to play.
+										</p>
+										<h5>How do I veto a policy?</h5>
+										<p>
+											Veto is unlocked after the 5th fascist card is played. This power allows for the resulting policy to be played to be nullified- but only 
+											if both the president and chancellor vote "ja". If either votes "nein", the resulting policy will be enacted as usual.
+										</p>
 										<h5>How do you get a cool player color or upload your own personal cardback?</h5>
 										<p>
 											Play 50 games to attain "rainbow" status and have a color based off your ELO. Click on the info icon next to "Lobby" in the upper right
