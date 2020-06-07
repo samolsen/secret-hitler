@@ -1,3 +1,5 @@
+const { isProd } = require('../utils/envUtils');
+
 const passport = require('passport'); // eslint-disable-line no-unused-vars
 const Account = require('../models/account'); // eslint-disable-line no-unused-vars
 const { getProfile } = require('../models/profile/utils');
@@ -44,7 +46,7 @@ module.exports = () => {
 			renderObj.username = req.user.username;
 		}
 
-		if (process.env.NODE_ENV === 'production') {
+		if (isProd()) {
 			renderObj.prodCacheBustToken = prodCacheBustToken.prodCacheBustToken;
 		}
 
@@ -189,7 +191,7 @@ module.exports = () => {
 					tertiaryTextColor: `hsl(${textHue}, ${textSaturation}%, ${textLightness > 50 ? textLightness - 14 : textLightness + 14}%)`
 				};
 
-				if (process.env.NODE_ENV === 'production') {
+				if (isProd()) {
 					gameObj.prodCacheBustToken = prodCacheBustToken.prodCacheBustToken;
 				}
 
@@ -255,7 +257,7 @@ module.exports = () => {
 			tertiaryTextColor
 		};
 
-		if (process.env.NODE_ENV === 'production') {
+		if (isProd()) {
 			gameObj.prodCacheBustToken = prodCacheBustToken.prodCacheBustToken;
 		}
 

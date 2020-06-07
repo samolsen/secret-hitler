@@ -2,6 +2,8 @@
  * @param {object} game - game to act on.
  * @return {object} game
  */
+const { isNotProd } = require('../../utils/envUtils');
+
 const secureGame = game => {
 	const _game = Object.assign({}, game);
 
@@ -180,7 +182,7 @@ module.exports.rateEloGame = (game, accounts, winningPlayerNames) => {
 };
 
 module.exports.destroySession = username => {
-	if (process.env.NODE_ENV !== 'production') {
+	if (isNotProd()) {
 		const Mongoclient = require('mongodb').MongoClient;
 
 		let mongoClient;

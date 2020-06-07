@@ -1,3 +1,5 @@
+const { isProd } = require('../../utils/envUtils');
+
 const {
 	handleUpdatedTruncateGame,
 	handleUpdatedReportGame,
@@ -168,7 +170,7 @@ const gatherStaffUsernames = () => {
 };
 
 module.exports.socketRoutes = () => {
-	if (process.env.NODE_ENV === 'production') {
+	if (isProd()) {
 		setInterval(gamesGarbageCollector, 30000);
 	}
 

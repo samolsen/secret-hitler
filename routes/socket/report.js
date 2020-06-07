@@ -1,4 +1,4 @@
-const https = require('https');
+// const https = require('https');
 const Account = require('../../models/account');
 const { newStaff } = require('./models');
 
@@ -15,24 +15,7 @@ module.exports.makeReport = (data, game, type = 'report') => {
 			username: '@Mod Ping',
 			avatar_url: 'https://cdn.discordapp.com/emojis/612042360318328842.png?v=1'
 		});
-		if (process.env.NODE_ENV === 'production') {
-			try {
-				const req = https.request({
-					hostname: 'discordapp.com',
-					path: process.env.DISCORDREPORTURL,
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Content-Length': Buffer.byteLength(report)
-					}
-				});
-				req.end(report);
-			} catch (e) {
-				console.log(e);
-			}
-		} else {
-			console.log(`${text}\n${game.general.uid}`);
-		}
+		console.log(`${text}\n${game.general.uid}`);
 		return;
 	}
 
@@ -102,23 +85,6 @@ module.exports.makeReport = (data, game, type = 'report') => {
 			}
 		}
 
-		if (process.env.NODE_ENV === 'production') {
-			try {
-				const req = https.request({
-					hostname: 'discordapp.com',
-					path: process.env.DISCORDREPORTURL,
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Content-Length': Buffer.byteLength(report)
-					}
-				});
-				req.end(report);
-			} catch (e) {
-				console.log(e);
-			}
-		} else {
-			console.log(`${text}\n${game.general.uid}`);
-		}
+		console.log(`${text}\n${game.general.uid}\n${report}`);
 	});
 };

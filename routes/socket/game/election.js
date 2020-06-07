@@ -1,3 +1,5 @@
+const { isDev } = require('../../../utils/envUtils');
+
 const { sendInProgressGameUpdate, sendInProgressModChatUpdate } = require('../util');
 const { startElection, shufflePolicies } = require('./common');
 const { sendGameList } = require('../user-requests');
@@ -148,7 +150,7 @@ const enactPolicy = (game, team, socket) => {
 			game.gameState.audioCue = team === 'liberal' ? 'enactPolicyL' : 'enactPolicyF';
 			sendInProgressGameUpdate(game, true);
 		},
-		process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 300 : 2000
+		isDev() ? 100 : experiencedMode ? 300 : 2000
 	);
 
 	setTimeout(
@@ -218,13 +220,13 @@ const enactPolicy = (game, team, socket) => {
 							player.cardStatus.isFlipped = true;
 						});
 						game.gameState.audioCue = '';
-						if (process.env.NODE_ENV === 'development') {
+						if (isDev()) {
 							completeGame(game, game.trackState.liberalPolicyCount === 1 ? 'liberal' : 'fascist');
 						} else {
 							completeGame(game, game.trackState.liberalPolicyCount === 5 ? 'liberal' : 'fascist');
 						}
 					},
-					process.env.NODE_ENV === 'development' ? 100 : 2000
+					isDev() ? 100 : 2000
 				);
 			} else if (powerToEnact && game.trackState.electionTrackerCount <= 2) {
 				const chat = {
@@ -292,7 +294,7 @@ const enactPolicy = (game, team, socket) => {
 
 			game.trackState.electionTrackerCount = 0;
 		},
-		process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 4000
+		isDev() ? 100 : experiencedMode ? 1000 : 4000
 	);
 };
 
@@ -444,7 +446,7 @@ const selectPresidentVoteOnVeto = (passport, game, data, socket) => {
 								startElection(game);
 							}
 						},
-						process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 3000
+						isDev() ? 100 : experiencedMode ? 1000 : 3000
 					);
 				} else {
 					game.gameState.audioCue = 'failedVeto';
@@ -460,11 +462,11 @@ const selectPresidentVoteOnVeto = (passport, game, data, socket) => {
 								publicChancellor.cardStatus.isFlipped = publicPresident.cardStatus.isFlipped = false;
 							}, 1000);
 						},
-						process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 2000
+						isDev() ? 100 : experiencedMode ? 1000 : 2000
 					);
 				}
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+			isDev() ? 100 : experiencedMode ? 500 : 2000
 		);
 	}
 };
@@ -633,7 +635,7 @@ const selectChancellorVoteOnVeto = (passport, game, data, socket) => {
 								);
 							}
 						},
-						process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 1000
+						isDev() ? 100 : experiencedMode ? 500 : 1000
 					);
 				} else {
 					game.gameState.audioCue = 'failedVeto';
@@ -648,11 +650,11 @@ const selectChancellorVoteOnVeto = (passport, game, data, socket) => {
 							}, 1000);
 							enactPolicy(game, game.private.currentElectionPolicies[0], socket);
 						},
-						process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+						isDev() ? 100 : experiencedMode ? 500 : 2000
 					);
 				}
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+			isDev() ? 100 : experiencedMode ? 500 : 2000
 		);
 	}
 };
@@ -877,10 +879,10 @@ const selectChancellorPolicy = (passport, game, data, wasTimer, socket) => {
 
 							sendInProgressGameUpdate(game);
 						},
-						process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 1000
+						isDev() ? 100 : experiencedMode ? 500 : 1000
 					);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 2000
+				isDev() ? 100 : experiencedMode ? 1000 : 2000
 			);
 		} else {
 			game.private.currentElectionPolicies = [];
@@ -1505,7 +1507,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 				() => {
 					enactPolicy(game, game.private.policies.shift(), socket);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+				isDev() ? 100 : experiencedMode ? 500 : 2000
 			);
 		} else {
 			if (game.general.timedMode) {
@@ -1533,7 +1535,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 				() => {
 					module.exports.startElection(game);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+				isDev() ? 100 : experiencedMode ? 500 : 2000
 			);
 		}
 	};
@@ -1576,7 +1578,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 						});
 						sendInProgressGameUpdate(game);
 					},
-					process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+					isDev() ? 100 : experiencedMode ? 500 : 2000
 				);
 
 				if (seatedPlayers.filter(play => play.voteStatus.didVoteYes && !play.isDead).length / game.general.livingPlayerCount > 0.5) {
@@ -1638,7 +1640,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 								}
 								sendInProgressGameUpdate(game);
 							},
-							process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 3000
+							isDev() ? 100 : experiencedMode ? 1000 : 3000
 						);
 
 						setTimeout(
@@ -1649,7 +1651,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 								});
 								completeGame(game, 'fascist');
 							},
-							process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 2000 : 4000
+							isDev() ? 100 : experiencedMode ? 2000 : 4000
 						);
 					} else {
 						passedElection(socket);
@@ -1675,7 +1677,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 
 				sendInProgressGameUpdate(game);
 			},
-			process.env.NODE_ENV === 'development' ? 2100 : isConsensus ? 1500 : 6000
+			isDev() ? 2100 : isConsensus ? 1500 : 6000
 		);
 	};
 
@@ -1776,7 +1778,7 @@ module.exports.selectVoting = (passport, game, data, socket, force = false) => {
 					}
 					flipBallotCards(socket);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 2500 : 3000
+				isDev() ? 100 : experiencedMode ? 2500 : 3000
 			);
 		}
 	}

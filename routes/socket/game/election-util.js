@@ -1,3 +1,5 @@
+const { isDev } = require('../../../utils/envUtils');
+
 const { sendInProgressGameUpdate } = require('../util');
 
 /**
@@ -157,7 +159,7 @@ module.exports.selectChancellor = (socket, passport, game, data, force = false) 
 			() => {
 				sendInProgressGameUpdate(game);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 1000
+			isDev() ? 100 : experiencedMode ? 500 : 1000
 		);
 
 		game.gameState.phase = 'voting';
@@ -234,7 +236,7 @@ module.exports.selectChancellor = (socket, passport, game, data, force = false) 
 				}
 				sendInProgressGameUpdate(game);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 1500
+			isDev() ? 100 : experiencedMode ? 500 : 1500
 		);
 	}
 };

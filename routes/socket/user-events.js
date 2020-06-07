@@ -1,3 +1,5 @@
+const isProd = require('../../utils/envUtils');
+
 const {
 	games,
 	userList,
@@ -26,7 +28,7 @@ const startGame = require('./game/start-game.js');
 const { completeGame } = require('./game/end-game');
 const { secureGame } = require('./util.js');
 // const crypto = require('crypto');
-const https = require('https');
+// const https = require('https');
 const _ = require('lodash');
 const { sendInProgressGameUpdate, sendPlayerChatUpdate } = require('./util.js');
 const animals = require('../../utils/animals');
@@ -321,26 +323,6 @@ const handleSocketDisconnect = socket => {
 		sendUserList();
 	}
 };
-
-const crashReport = JSON.stringify({
-	content: `${process.env.DISCORDADMINPING} the site just crashed or reset.`
-});
-
-const crashOptions = {
-	hostname: 'discordapp.com',
-	path: process.env.DISCORDCRASHURL,
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json',
-		'Content-Length': Buffer.byteLength(crashReport)
-	}
-};
-
-if (process.env.NODE_ENV === 'production') {
-	const crashReq = https.request(crashOptions);
-
-	crashReq.end(crashReport);
-}
 
 /**
  * @param {object} socket - user socket reference.
@@ -3172,25 +3154,6 @@ module.exports.handleModerationAction = (socket, passport, data, skipCheck, modU
 					io.sockets.emit('generalChats', generalChats);
 					break;
 				case 'broadcast':
-					const discordBroadcastBody = JSON.stringify({
-						content: `Text: ${data.comment}\nMod: ${passport.user}`
-					});
-					const discordBroadcastOptions = {
-						hostname: 'discordapp.com',
-						path: process.env.DISCORDBROADCASTURL,
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'Content-Length': Buffer.byteLength(discordBroadcastBody)
-						}
-					};
-					try {
-						const broadcastReq = https.request(discordBroadcastOptions);
-						broadcastReq.end(discordBroadcastBody);
-					} catch (e) {
-						console.log(e, 'err in broadcast');
-					}
-
 					Object.keys(games).forEach(gameName => {
 						games[gameName].chats.push({
 							userName: `[BROADCAST] ${data.modName}`,
@@ -3654,25 +3617,7 @@ module.exports.handleModerationAction = (socket, passport, data, skipCheck, modU
 				case 'resetServer':
 					if (isSuperMod) {
 						console.log('server crashing manually via mod action');
-						const crashReport = JSON.stringify({
-							content: `${process.env.DISCORDADMINPING} the site was just reset manually by an admin or editor.`
-						});
 
-						const crashOptions = {
-							hostname: 'discordapp.com',
-							path: process.env.DISCORDCRASHURL,
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								'Content-Length': Buffer.byteLength(crashReport)
-							}
-						};
-
-						if (process.env.NODE_ENV === 'production') {
-							const crashReq = https.request(crashOptions);
-
-							crashReq.end(crashReport);
-						}
 						setTimeout(() => {
 							crashServer();
 						}, 1000);
@@ -3748,82 +3693,6 @@ module.exports.handleModerationAction = (socket, passport, data, skipCheck, modU
 					}
 			}
 
-			const niceAction = {
-				comment: 'Comment',
-				warn: 'Issue Warning',
-				removeWarning: 'Delete Warning',
-				getIP: 'Get IP',
-				ban: 'Ban',
-				setSticky: 'Set Sticky',
-				ipbanlarge: '1 Week IP Ban',
-				ipban: '18 Hour IP Ban',
-				enableAccountCreation: 'Enable Account Creation',
-				disableAccountCreation: 'Disable Account Creation',
-				enableVPNCheck: 'Enable VPN Check',
-				disableVPNCheck: 'Disable VPN Check',
-				togglePrivate: 'Toggle Private (Permanent)',
-				togglePrivateEighteen: 'Toggle Private (Temporary)',
-				timeOut: 'Timeout 18 Hours (IP)',
-				timeOut2: 'Timeout 18 Hours',
-				timeOut3: 'Timeout 1 Hour (IP)',
-				timeOut4: 'Timeout 6 Hours',
-				clearTimeout: 'Clear Timeout',
-				clearTimeoutIP: 'Clear IP Ban',
-				modEndGame: 'End Game',
-				deleteGame: 'Delete Game',
-				enableIpBans: 'Enable IP Bans',
-				disableIpBans: 'Disable IP Bans',
-				disableGameCreation: 'Disable Game Creation',
-				enableGameCreation: 'Enable Game Creation',
-				disableIpbans: 'Disable IP Bans',
-				enableIpbans: 'Enable IP Bans',
-				broadcast: 'Broadcast',
-				fragBanLarge: '1 Week Fragment Ban',
-				fragBanSmall: '18 Hour Fragment Ban',
-				clearGenchat: 'Clear General Chat',
-				deleteUser: 'Delete User',
-				deleteBio: 'Delete Bio',
-				deleteProfile: 'Delete Profile',
-				deleteCardback: 'Delete Cardback',
-				removeContributor: 'Remove Contributor Role',
-				resetGameName: 'Reset Game Name',
-				rainbowUser: 'Grant Rainbow',
-				removeStaffRole: 'Remove Staff Role',
-				promoteToContributor: 'Promote (Contributor)',
-				promoteToAltMod: 'Promote (AEM Alt)',
-				promoteToTrialMod: 'Promote (Trial Mod)',
-				promoteToVeteran: 'Promote (Veteran AEM)',
-				promoteToMod: 'Promote (Mod)',
-				promoteToEditor: 'Promote (Editor)',
-				makeBypass: 'Create Bypass Key',
-				bypassKeyUsed: 'Consume Bypass Key',
-				resetServer: 'Server Restart',
-				regatherAEMList: 'Refresh AEM List'
-			};
-
-			const modAction = JSON.stringify({
-				content: `Date: *${new Date()}*\nStaff member: **${modaction.modUserName}**\nAction: **${niceAction[modaction.actionTaken] ||
-					modaction.actionTaken}**\nUser: **${modaction.userActedOn}**\nComment: **${modaction.modNotes}**.`
-			});
-
-			const modOptions = {
-				hostname: 'discordapp.com',
-				path: process.env.DISCORDMODLOGURL,
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Content-Length': Buffer.byteLength(modAction)
-				}
-			};
-
-			if (process.env.NODE_ENV === 'production') {
-				try {
-					const modReq = https.request(modOptions);
-
-					modReq.end(modAction);
-				} catch (error) {}
-			}
-
 			modaction.save();
 		}
 	}
@@ -3836,7 +3705,7 @@ module.exports.handleModerationAction = (socket, passport, data, skipCheck, modU
 module.exports.handlePlayerReport = (passport, data) => {
 	const user = userList.find(u => u.userName === passport.user);
 
-	if (data.userName !== 'from replay' && (!user || user.wins + user.losses < 2) && process.env.NODE_ENV === 'production') {
+	if (data.userName !== 'from replay' && (!user || user.wins + user.losses < 2) && isProd()) {
 		return;
 	}
 
@@ -3879,26 +3748,6 @@ module.exports.handlePlayerReport = (passport, data) => {
 			break;
 	}
 
-	const httpEscapedComment = data.comment.replace(/( |^)(https?:\/\/\S+)( |$)/gm, '$1<$2>$3').replace(/@/g, '`@`');
-	const blindModeAnonymizedPlayer = games[data.uid].general.blindMode
-		? games[data.uid].gameState.isStarted
-			? `${data.reportedPlayer.split(' ')[0]} Anonymous`
-			: 'Anonymous'
-		: data.reportedPlayer;
-	const body = JSON.stringify({
-		content: `Game UID: <https://secrethitler.io/game/#/table/${data.uid}>\nReported player: ${blindModeAnonymizedPlayer}\nReason: ${playerReport.reason}\nComment: ${httpEscapedComment}`
-	});
-
-	const options = {
-		hostname: 'discordapp.com',
-		path: process.env.DISCORDURL,
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Content-Length': Buffer.byteLength(body)
-		}
-	};
-
 	const game = games[data.uid];
 
 	if (game) {
@@ -3908,13 +3757,6 @@ module.exports.handlePlayerReport = (passport, data) => {
 			return;
 		}
 		game.reportCounts[passport.user]++;
-	}
-
-	try {
-		const req = https.request(options);
-		req.end(body);
-	} catch (error) {
-		console.log(error, 'Caught exception in player request https request to discord server');
 	}
 
 	playerReport.save(err => {

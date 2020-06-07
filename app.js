@@ -1,3 +1,4 @@
+const isNotProd = require('./utils/envUtils').isNotProd;
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -16,18 +17,27 @@ const { expandAndSimplify } = require('./routes/socket/ip-obf');
 
 let store;
 
-if (process.env.NODE_ENV !== 'production') {
+const mongoConfig = {
+	host: process.env.MONGO_HOST || 'localhost',
+	port: process.env.MONGO_PORT || '27017',
+	dbname: process.env.MONGO_DB_NAME || 'secret-hitler-app'
+};
+
+const redisConfig = {
+	host: process.env.REDIS_HOST || '127.0.0.1',
+	port: process.env.REDIS_PORT || 6379
+};
+
+if (isNotProd()) {
 	const MongoDBStore = require('connect-mongodb-session')(session);
 	store = new MongoDBStore({
-		uri: 'mongodb://localhost:27017/secret-hitler-app',
+		uri: `mongodb://${mongoConfig.host}:${mongoConfig.port}/${mongoConfig.dbname}`,
 		collection: 'sessions'
 	});
 } else {
-	const redis = require('redis').createClient();
+	const redis = require('redis').createClient(redisConfig);
 	const RedisStore = require('connect-redis')(session);
 	store = new RedisStore({
-		host: '127.0.0.1',
-		port: 6379,
 		client: redis,
 		ttl: 2 * 604800 // 2 weeks
 	});
@@ -121,7 +131,7 @@ if (process.env.DISCORDCLIENTID) {
 
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
-mongoose.connect(`mongodb://localhost:27017/secret-hitler-app`, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`mongodb://${mongoConfig.host}:${mongoConfig.port}/${mongoConfig.dbname}`, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;

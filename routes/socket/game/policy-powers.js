@@ -1,3 +1,5 @@
+const { isDev } = require('../../../utils/envUtils');
+
 const { sendInProgressGameUpdate, sendInProgressModChatUpdate } = require('../util.js');
 const { startElection, shufflePolicies } = require('./common.js');
 const { sendGameList } = require('../user-requests');
@@ -114,7 +116,7 @@ module.exports.selectPolicies = (passport, game, socket) => {
 				president.cardFlingerState[0].cardStatus.isFlipped = president.cardFlingerState[1].cardStatus.isFlipped = president.cardFlingerState[2].cardStatus.isFlipped = true;
 				sendInProgressGameUpdate(game, true);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+			isDev() ? 100 : experiencedMode ? 500 : 2000
 		);
 
 		setTimeout(
@@ -124,7 +126,7 @@ module.exports.selectPolicies = (passport, game, socket) => {
 				sendInProgressGameUpdate(game, true);
 				game.gameState.audioCue = '';
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 3500 : 6000
+			isDev() ? 100 : experiencedMode ? 3500 : 6000
 		);
 
 		setTimeout(
@@ -195,7 +197,7 @@ module.exports.selectPolicies = (passport, game, socket) => {
 				president.playersState[presidentIndex].claim = 'didPolicyPeek';
 				startElection(game);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 4500 : 7000
+			isDev() ? 100 : experiencedMode ? 4500 : 7000
 		);
 	}
 };
@@ -299,7 +301,7 @@ module.exports.selectOnePolicy = (passport, game) => {
 				president.cardFlingerState[0].cardStatus.isFlipped = true;
 				sendInProgressGameUpdate(game, true);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 2000
+			isDev() ? 100 : experiencedMode ? 500 : 2000
 		);
 
 		setTimeout(
@@ -309,7 +311,7 @@ module.exports.selectOnePolicy = (passport, game) => {
 				sendInProgressGameUpdate(game, true);
 				game.gameState.audioCue = '';
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 3500 : 6000
+			isDev() ? 100 : experiencedMode ? 3500 : 6000
 		);
 
 		setTimeout(
@@ -429,13 +431,13 @@ module.exports.selectOnePolicy = (passport, game) => {
 
 								sendInProgressGameUpdate(game);
 							},
-							process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 500 : 1000
+							isDev() ? 100 : experiencedMode ? 500 : 1000
 						);
 					},
-					process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 2000
+					isDev() ? 100 : experiencedMode ? 1000 : 2000
 				);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 4500 : 7000
+			isDev() ? 100 : experiencedMode ? 4500 : 7000
 		);
 	}
 };
@@ -546,10 +548,10 @@ module.exports.selectBurnCard = (passport, game, data, socket) => {
 					() => {
 						startElection(game);
 					},
-					process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 3000
+					isDev() ? 100 : experiencedMode ? 1000 : 3000
 				);
 			},
-			process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 1000 : 3000
+			isDev() ? 100 : experiencedMode ? 1000 : 3000
 		);
 	}
 };
@@ -771,7 +773,7 @@ module.exports.selectPartyMembershipInvestigate = (passport, game, data, socket)
 					game.private.invIndex = playerIndex;
 					sendInProgressGameUpdate(game);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 200 : 2000
+				isDev() ? 100 : experiencedMode ? 200 : 2000
 			);
 
 			setTimeout(
@@ -780,7 +782,7 @@ module.exports.selectPartyMembershipInvestigate = (passport, game, data, socket)
 					president.playersState[playerIndex].cardStatus.isFlipped = false;
 					sendInProgressGameUpdate(game, true);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 4000 : 6000
+				isDev() ? 100 : experiencedMode ? 4000 : 6000
 			);
 
 			setTimeout(
@@ -791,7 +793,7 @@ module.exports.selectPartyMembershipInvestigate = (passport, game, data, socket)
 					sendInProgressGameUpdate(game, true);
 					startElection(game);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 4200 : 8000
+				isDev() ? 100 : experiencedMode ? 4200 : 8000
 			);
 		}
 	}
@@ -995,7 +997,7 @@ module.exports.selectPartyMembershipInvestigateReverse = (passport, game, data, 
 
 					sendInProgressGameUpdate(game);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 200 : 2000
+				isDev() ? 100 : experiencedMode ? 200 : 2000
 			);
 
 			setTimeout(
@@ -1004,7 +1006,7 @@ module.exports.selectPartyMembershipInvestigateReverse = (passport, game, data, 
 					targetPlayer.playersState[presidentIndex].cardStatus.isFlipped = false;
 					sendInProgressGameUpdate(game, true);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 4000 : 6000
+				isDev() ? 100 : experiencedMode ? 4000 : 6000
 			);
 
 			setTimeout(
@@ -1015,7 +1017,7 @@ module.exports.selectPartyMembershipInvestigateReverse = (passport, game, data, 
 					sendInProgressGameUpdate(game, true);
 					startElection(game);
 				},
-				process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 4200 : 8000
+				isDev() ? 100 : experiencedMode ? 4200 : 8000
 			);
 		}
 	}
@@ -1350,7 +1352,7 @@ module.exports.selectPlayerToExecute = (passport, game, data, socket) => {
 							game.gameState.audioCue = 'hitlerShot';
 							sendInProgressGameUpdate(game);
 						},
-						process.env.NODE_ENV === 'development' ? 100 : 1000
+						isDev() ? 100 : 1000
 					);
 
 					setTimeout(
@@ -1362,7 +1364,7 @@ module.exports.selectPlayerToExecute = (passport, game, data, socket) => {
 							game.gameState.audioCue = '';
 							completeGame(game, 'liberal');
 						},
-						process.env.NODE_ENV === 'development' ? 100 : 2000
+						isDev() ? 100 : 2000
 					);
 				} else {
 					let libAlive = false;
@@ -1402,7 +1404,7 @@ module.exports.selectPlayerToExecute = (passport, game, data, socket) => {
 								game.gameState.audioCue = 'hitlerShot';
 								sendInProgressGameUpdate(game);
 							},
-							process.env.NODE_ENV === 'development' ? 100 : 1000
+							isDev() ? 100 : 1000
 						);
 
 						setTimeout(
@@ -1414,7 +1416,7 @@ module.exports.selectPlayerToExecute = (passport, game, data, socket) => {
 								game.gameState.audioCue = '';
 								completeGame(game, 'fascist');
 							},
-							process.env.NODE_ENV === 'development' ? 100 : 2000
+							isDev() ? 100 : 2000
 						);
 					} else {
 						let playersAlive = 0;
@@ -1503,13 +1505,13 @@ module.exports.selectPlayerToExecute = (passport, game, data, socket) => {
 												player.cardStatus.isFlipped = true;
 											});
 											game.gameState.audioCue = '';
-											if (process.env.NODE_ENV === 'development') {
+											if (isDev()) {
 												completeGame(game, game.trackState.liberalPolicyCount === 1 ? 'liberal' : 'fascist');
 											} else {
 												completeGame(game, game.trackState.liberalPolicyCount === 5 ? 'liberal' : 'fascist');
 											}
 										},
-										process.env.NODE_ENV === 'development' ? 100 : 2000
+										isDev() ? 100 : 2000
 									);
 								} else setTimeout(playCard, 2500);
 								sendInProgressGameUpdate(game);
@@ -1523,13 +1525,13 @@ module.exports.selectPlayerToExecute = (passport, game, data, socket) => {
 									game.trackState.electionTrackerCount = 0;
 									startElection(game);
 								},
-								process.env.NODE_ENV === 'development' ? 100 : 2000
+								isDev() ? 100 : 2000
 							);
 						}
 					}
 				}
 			},
-			process.env.NODE_ENV === 'development' ? 100 : 4000
+			isDev() ? 100 : 4000
 		);
 	}
 };

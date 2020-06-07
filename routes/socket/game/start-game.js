@@ -1,3 +1,4 @@
+const { isDev, isNotDev } = require('../../../utils/envUtils');
 const { sendInProgressGameUpdate, sendInProgressModChatUpdate } = require('../util.js');
 const _ = require('lodash');
 const { startElection } = require('./election.js');
@@ -484,7 +485,7 @@ const beginGame = game => {
 			});
 			sendInProgressGameUpdate(game);
 		},
-		process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 200 : 2000
+		isDev() ? 100 : experiencedMode ? 200 : 2000
 	);
 
 	setTimeout(
@@ -500,7 +501,7 @@ const beginGame = game => {
 			});
 			sendInProgressGameUpdate(game, true);
 		},
-		process.env.NODE_ENV === 'development' ? 100 : 5000
+		isDev() ? 100 : 5000
 	);
 
 	setTimeout(
@@ -510,7 +511,7 @@ const beginGame = game => {
 			});
 			sendInProgressGameUpdate(game, true);
 		},
-		process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 5200 : 7000
+		isDev() ? 100 : experiencedMode ? 5200 : 7000
 	);
 
 	setTimeout(
@@ -523,7 +524,7 @@ const beginGame = game => {
 			game.gameState.presidentIndex = -1;
 			startElection(game);
 		},
-		process.env.NODE_ENV === 'development' ? 100 : experiencedMode ? 5400 : 9000
+		isDev() ? 100 : experiencedMode ? 5400 : 9000
 	);
 
 	for (let affectedPlayerNumber = 0; affectedPlayerNumber < game.publicPlayersState.length; affectedPlayerNumber++) {
@@ -535,7 +536,7 @@ const beginGame = game => {
 		if (!io.sockets.sockets[affectedSocketId]) {
 			continue;
 		}
-		if (process.env.NODE_ENV !== 'development') {
+		if (isNotDev()) {
 			io.sockets.sockets[affectedSocketId].emit('pingPlayer', 'Secret Hitler IO: The game has started!');
 		}
 	}
@@ -546,7 +547,7 @@ const beginGame = game => {
  */
 module.exports = game => {
 	game.gameState.isTracksFlipped = true;
-	let startGamePause = process.env.NODE_ENV === 'development' ? 1 : 5;
+	let startGamePause = isDev() ? 1 : 5;
 
 	const countDown = setInterval(() => {
 		if (!startGamePause) {

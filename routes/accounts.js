@@ -1,3 +1,4 @@
+const isProd = require('../utils/envUtils').isProd;
 const passport = require('passport');
 const Account = require('../models/account');
 const Profile = require('../models/profile/index');
@@ -5,7 +6,7 @@ const BannedIP = require('../models/bannedIP');
 const Signups = require('../models/signups');
 const fetch = require('node-fetch');
 const EightEightCounter = require('../models/eightEightCounter');
-const { accountCreationDisabled, bypassVPNCheck, verifyBypass, consumeBypass, testIP } = require('./socket/models');
+const { accountCreationDisabled, bypassVPNCheck, consumeBypass, testIP } = require('./socket/models');
 const { verifyRoutes, setVerify } = require('./verification');
 const blacklistedWords = require('../iso/blacklistwords');
 const bannedEmails = require('../utils/disposableEmails');
@@ -39,7 +40,7 @@ const renderPage = (req, res, pageName, varName) => {
 		renderObj.username = req.user.username;
 	}
 
-	if (process.env.NODE_ENV === 'production') {
+	if (isProd()) {
 		renderObj.prodCacheBustToken = prodCacheBustToken.prodCacheBustToken;
 	}
 
@@ -421,17 +422,18 @@ module.exports.accounts = torIpsParam => {
 		const { username, password, password2, email, isPrivate } = req.body;
 		let { bypassKey, bypass } = req.body;
 		bypassKey = bypass || bypassKey;
-		let hasBypass = false;
-		if (bypassKey) {
-			bypassKey = bypassKey.trim();
-			if (bypassKey.length) {
-				if (!verifyBypass(bypassKey)) {
-					res.status(401).json({ message: 'Restriction bypass key invalid, leave that field empty if it is not needed.' });
-					return;
-				}
-				hasBypass = true;
-			}
-		}
+		const hasBypass = true;
+		// let hasBypass = false;
+		// if (bypassKey) {
+		// 	bypassKey = bypassKey.trim();
+		// 	if (bypassKey.length) {
+		// 		if (!verifyBypass(bypassKey)) {
+		// 			res.status(401).json({ message: 'Restriction bypass key invalid, leave that field empty if it is not needed.' });
+		// 			return;
+		// 		}
+		// 		hasBypass = true;
+		// 	}
+		// }
 		const signupIP = req.expandedIP;
 		const save = {
 			username,
