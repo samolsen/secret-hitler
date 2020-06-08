@@ -128,11 +128,11 @@ $(document).ready(function() {
 		var username = $('#signup-username').val(),
 			password = $('#signup-password1').val(),
 			password2 = $('#signup-password2').val(),
-			email = $('#signup-email').val(),
+			email = '', // $('#signup-email').val(),
 			$loader = $(this).next(),
 			$message = $loader.next(),
-			isPrivate = $('#private-player').is(':checked'),
-			bypassKey = $('#signup-bypass').val(),
+			isPrivate = false, //$('#private-player').is(':checked'),
+			bypassKey = '', // $('#signup-bypass').val(),
 			submitErr = function(message) {
 				$loader.removeClass('active');
 				$message.text(message).removeClass('hidden');

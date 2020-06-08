@@ -313,39 +313,40 @@ const unbanTime = new Date() - 64800000;
 BannedIP.deleteMany({ type: 'new', bannedDate: { $lte: unbanTime } }, (err, r) => {
 	if (err) throw err;
 });
-const banLength = {
-	small: 18 * 60 * 60 * 1000, // 18 hours
-	new: 18 * 60 * 60 * 1000, // 18 hours
-	tiny: 1 * 60 * 60 * 1000, // 1 hour
-	big: 7 * 24 * 60 * 60 * 1000 // 7 days
-};
+// const banLength = {
+// 	small: 18 * 60 * 60 * 1000, // 18 hours
+// 	new: 18 * 60 * 60 * 1000, // 18 hours
+// 	tiny: 1 * 60 * 60 * 1000, // 1 hour
+// 	big: 7 * 24 * 60 * 60 * 1000 // 7 days
+// };
 module.exports.testIP = (IP, callback) => {
-	if (!IP) callback('Bad IP!');
-	else if (module.exports.ipbansNotEnforced.status) callback(null);
-	else {
-		BannedIP.find({ ip: IP }, (err, ips) => {
-			if (err) callback(err);
-			else {
-				let date;
-				let unbannedTime;
-				const ip = ips.sort((a, b) => b.bannedDate - a.bannedDate)[0];
-
-				if (ip) {
-					date = Date.now();
-					unbannedTime = ip.bannedDate.getTime() + (banLength[ip.type] || banLength.big);
-				}
-
-				if (ip && unbannedTime > date) {
-					if (process.env.NODE_ENV === 'production') {
-						callback(ip.type, unbannedTime);
-					} else {
-						console.log(`IP ban ignored: ${IP} = ${ip.type}`);
-						callback(null);
-					}
-				} else {
-					callback(null);
-				}
-			}
-		});
-	}
+	callback(null);
+	// if (!IP) callback('Bad IP!');
+	// else if (module.exports.ipbansNotEnforced.status) callback(null);
+	// else {
+	// 	BannedIP.find({ ip: IP }, (err, ips) => {
+	// 		if (err) callback(err);
+	// 		else {
+	// 			let date;
+	// 			let unbannedTime;
+	// 			const ip = ips.sort((a, b) => b.bannedDate - a.bannedDate)[0];
+	//
+	// 			if (ip) {
+	// 				date = Date.now();
+	// 				unbannedTime = ip.bannedDate.getTime() + (banLength[ip.type] || banLength.big);
+	// 			}
+	//
+	// 			if (ip && unbannedTime > date) {
+	// 				if (process.env.NODE_ENV === 'production') {
+	// 					callback(ip.type, unbannedTime);
+	// 				} else {
+	// 					console.log(`IP ban ignored: ${IP} = ${ip.type}`);
+	// 					callback(null);
+	// 				}
+	// 			} else {
+	// 				callback(null);
+	// 			}
+	// 		}
+	// 	});
+	// }
 };

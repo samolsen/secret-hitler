@@ -67,7 +67,7 @@ html(lang="en")
         .ui.dimmer.inverted
           .ui.text.loader Signing in..
         .ui.negative.hidden.message
-        a#reset-password(style="cursor: pointer; display: block; margin-top: 10px;") Forget your password?
+
 
     section.password-reset-modal.ui.modal.small.segment.column
       h2.header Request a password reset
@@ -111,22 +111,6 @@ html(lang="en")
             i.lock.icon
             input#signup-password2(placeholder="Repeat password", type="password", maxlength="255")
           .ui.info.message.hidden
-        .field
-          .ui.left.icon.input
-            i.key.icon
-            input#signup-bypass(placeholder="Restriction bypass key (optional)", spellcheck="false")
-          .ui.info.message.hidden
-        .field
-          h4.header(style="color: darkred") EMAIL OPTIONAL
-          .ui.left.icon.input
-            i.envelope.outline.icon
-            input#signup-email(placeholder="Email", maxlength="255", spellcheck="false")
-          .ui.info.message.hidden
-        .field
-          label
-            input#private-player(type="checkbox", style="margin-right: 5px", name="privateWarning")
-            span(style="color: #aaa") READ CAREFULLY BEFORE CHECKING: Private game player only option - your name will not be visible in the sidebar, you can't chat in general chat, 
-            b(style="color: #555") you can't play in public games.
         .field
           label
             input#tou-agree(type="checkbox", style="margin-right: 5px")
