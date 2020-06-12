@@ -5,11 +5,16 @@ services:
     restart: always
     ports:
       - '27017:27017'
+    volumes:
+      - './data/mongo:/data/db'
   redis:
     image: 'redis:6.0.4'
     restart: always
     #    ports:
     #      - '6379:6379'
+    volumes:
+      - './data/redis:/data'
+
   app:
     build: .
     ports:
